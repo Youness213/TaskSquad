@@ -21,6 +21,9 @@
 
             <v-text-field
               v-model="password"
+              :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="show ? 'text' : 'password'"
+              @click:append="show = !show"
               :readonly="loading"
               :rules="[required]"
               clearable
@@ -60,27 +63,29 @@
 
 <script>
 import router from '@/router'
-
+import auth from '@/store/modules/auth'
   export default {
     data: () => ({
       form: false,
       email: null,
       password: null,
       loading: false,
+      show:false
     }),
 
     methods: {
       onSubmit () {
         if (!this.form) return
-
+        console.log(auth)
         this.loading = true
-
+        auth.user = this.email
         setTimeout(() => (this.loading = false), 2000)
         router.push('/DashBoard')
       },
       required (v) {
         return !!v || 'Champ requis'
-      },
+      }
+
     },
   }
 </script>

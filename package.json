@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "axios": "^1.4.0",
     "core-js": "^3.8.3",
+    "node-mailjet": "^6.0.2",
+    "nodemailer": "^6.9.1",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-router": "^4.0.0",
     "vuetify": "^3.0.0",
-    "vuex": "^4.1.0",
+    "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
-
+import fr from 'vuetify/lib/locale/fr.mjs'
 // Composables
 import { createVuetify } from 'vuetify'
 
@@ -23,4 +23,8 @@ export default createVuetify({
       },
     },
   },
+  lang: {
+    locales: { fr },
+    current: 'fr'
+  }
 })

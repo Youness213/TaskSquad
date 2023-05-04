@@ -6,7 +6,7 @@
       image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
     >
       <v-app-bar-nav-icon>
-        <v-menu activator="parent" transition="slide-x-transition">
+        <v-menu activator="parent" transition="slide-x-transition" v-if="state">
       <template v-slot:activator="{ props }">
         <v-btn
         density="comfortable"
@@ -32,6 +32,7 @@
         </v-list>
       
     </v-menu>
+    <v-img src="./assets/package.png" v-else></v-img>
   </v-app-bar-nav-icon>
 
       <v-toolbar-title>Task Squad</v-toolbar-title>
@@ -46,17 +47,22 @@
 </template>
 
 <script>
+import auth from '@/store/modules/auth';
   export default {
     data: () => ({
       items: [
         { title: 'Acceuil', route: '/Home' },
-        { title: 'Connection', route: '/LogIn' },
+        { title: 'Connexion', route: '/LogIn' },
         { title: 'Nouveau Compte', route: '/Register' },
       ],
+      state:false,
       IsConnected: "",
     }),
     mounted(){
-      this.IsConnected = "mdi-export"
+      this.state = !auth.getters.isAuthentified() 
+      if(!this.state){
+        this.IsConnected = "mdi-export"
+      }
     }
   }
 

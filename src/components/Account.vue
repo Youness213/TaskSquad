@@ -46,28 +46,13 @@
               label="Mot de passe"
               variant="underlined"
             ></v-text-field>
-
-            <v-checkbox
-              v-model="terms"
-              :rules="[required]"
-              color="success"
-              label="I agree to site terms and conditions"
-            ></v-checkbox>
           </v-container>
 
           <v-divider></v-divider>
 
           <v-card-actions>
-            <v-btn color="success" @click="$router.push('/LogIn')">
-              <v-icon icon="mdi-chevron-left" start></v-icon>
-              Se Connecter
-
-            </v-btn>
             
             <v-spacer></v-spacer>
-            <v-divider vertical></v-divider>
-            <v-divider vertical></v-divider>
-            <v-divider vertical></v-divider>
             <v-spacer></v-spacer>
 
             <v-btn color="success" @click="onSubmit();" type="submit" :loading="loading">
