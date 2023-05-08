@@ -55,10 +55,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/Teams.vue'),
       },
       {
-        path: '',
+        path: '*',
         redirect: 'LogIn'
       }
     ],
+    
 
   },
 ]

@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
@@ -15,14 +15,17 @@
     "node-mailjet": "^6.0.2",
     "nodemailer": "^6.9.1",
     "roboto-fontface": "*",
-    "vue": "^3.2.13",
+    "vue": "^3.2.47",
     "vue-router": "^4.0.0",
+    "vue-session": "^1.0.0",
     "vuetify": "^3.0.0",
     "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/cli-plugin-vuex": "~5.0.0",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "sass": "^1.55.0",

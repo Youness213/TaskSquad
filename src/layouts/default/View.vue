@@ -2,7 +2,7 @@
   <div>
     <v-toolbar dark prominent image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
       <v-app-bar-nav-icon>
-        <v-menu activator="parent" transition="slide-x-transition" v-if="state">
+        <v-menu activator="parent" transition="slide-x-transition" v-if="$store.state.auth.user === null">
           <template v-slot:activator="{ props }">
             <v-btn density="comfortable" icon="mdi-format-list-checkbox" v-bind="props" large>
 
@@ -20,7 +20,7 @@
           </v-list>
 
         </v-menu>
-        <v-img src="./assets/package.png" v-else></v-img>
+        <v-img src="@/assets/package.png" v-else></v-img>
       </v-app-bar-nav-icon>
 
       <v-toolbar-title>Task Squad</v-toolbar-title>
@@ -32,13 +32,13 @@
       </v-btn>
     </v-toolbar>
   </div>
-  <v-layout >
+  <v-layout v-if="$store.state.auth.user !== null">
     <v-navigation-drawer expand-on-hover rail>
 
       <v-card>
         <v-list>
-          <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" title="bibouch"
-            subtitle="BIBIIII"></v-list-item>
+          <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" :title="$store.state.auth.username"
+            :subtitle="$store.state.auth.useremail"></v-list-item>
         </v-list>
 
         <v-divider></v-divider>
@@ -55,6 +55,9 @@
       <router-view />
     </v-main>
   </v-layout>
+  <v-main v-else>
+      <router-view />
+    </v-main>
 </template>
 
 <script>

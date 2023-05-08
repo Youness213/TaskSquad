@@ -6,7 +6,7 @@
       image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
     >
       <v-app-bar-nav-icon>
-        <v-menu activator="parent" transition="slide-x-transition" v-if="state">
+        <v-menu activator="parent" transition="slide-x-transition" v-if="false">
       <template v-slot:activator="{ props }">
         <v-btn
         density="comfortable"
@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import auth from '@/store/modules/auth';
   export default {
     data: () => ({
       items: [
@@ -59,10 +58,7 @@ import auth from '@/store/modules/auth';
       IsConnected: "",
     }),
     mounted(){
-      this.state = !auth.getters.isAuthentified() 
-      if(!this.state){
-        this.IsConnected = "mdi-export"
-      }
+      
     }
   }
 

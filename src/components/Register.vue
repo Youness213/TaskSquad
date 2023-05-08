@@ -83,7 +83,7 @@
 </template>
   
 <script>
-
+import axios from 'axios'
   export default {
     data: () => ({
       form: true,
@@ -92,6 +92,7 @@
       last:'',
       email: '',
       password: '',
+      status:false
       },
       loading: false,
       show: false,
@@ -103,8 +104,21 @@
         try {
           console.log(await this.$refs.form.validate())
           if ((await this.$refs.form.validate()).valid) {
-
-            this.Sendit()
+            axios.post('http://localhost:4000/api/create-users',this.user)
+            .then(async (res) => {
+              if(res.status ==200){
+                
+                await this.Sendit()
+                this.$router.push('/login')
+                this.user = {
+                  first:'',
+                  last:'',
+                  email: '',
+                  password: '',
+                  status:false
+                }
+              }
+            })
 
           }
           console.log(await this.$refs.form.validate())
@@ -117,8 +131,8 @@
       required (v) {
         return !!v || 'Champ requis'
       },
-      Sendit() {
-        Email.send({
+      async Sendit() {
+        await Email.send({
           Host: "smtp.elasticemail.com",
           Port: '2525',
           Username: "tasksquad13000@gmail.com",

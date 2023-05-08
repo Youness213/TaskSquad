@@ -1,14 +1,14 @@
 <template>
   <div class="fill-height ">
-      <v-img class="align-center ml-16 mr-n16 px-15"
+      <v-img class="align-center mt-16 ml-16 mr-n16 px-15"
       cover
       width="1710"
-        src="@/assets/3725.jpg"
+        src="@/assets/32960.jpg"
       >
       <v-card
           class="mx-auto"
           max-width="400"
-          title="Création d'un compte"
+          title="Mon compte"
         >
         <v-form @submit.prevent ref="form">
           <v-container>

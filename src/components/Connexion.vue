@@ -63,8 +63,8 @@
 
 <script>
 import router from '@/router'
-import auth from '@/store/modules/auth'
-  export default {
+import axios from 'axios'
+export default {
     data: () => ({
       form: false,
       email: null,
@@ -74,13 +74,20 @@ import auth from '@/store/modules/auth'
     }),
 
     methods: {
-      onSubmit () {
+      async onSubmit () {
         if (!this.form) return
-        console.log(auth)
         this.loading = true
-        auth.user = this.email
-        setTimeout(() => (this.loading = false), 2000)
-        router.push('/DashBoard')
+        await axios.get('http://localhost:4000/api/getuser').then(r => {
+          r.data.forEach(element => {
+            if(element.email == this.email && element.password == this.password){
+              this.loading = false
+              this.$store.state.auth.user = element._id
+              this.$store.state.auth.username = element.first + ' ' + element.last
+              this.$store.state.auth.useremail = element.email
+              router.push('/dashboard')
+            }
+          });
+        })
       },
       required (v) {
         return !!v || 'Champ requis'

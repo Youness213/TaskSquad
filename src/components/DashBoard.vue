@@ -60,16 +60,29 @@
       <v-col cols="12" xs="12" sm="4" md="3" lg="2" v-for="(    v, i    ) in     projects    " :key=" v.ID ">
           <v-hover>
             <template v-slot:default=" { isHovering, props } ">
-              <v-card :title=" v.title " :subtitle=" 'Dernier délai : ' + v.due " :text=" v.content " max-height="200"
-                max-width="200" v-bind=" props " :elevation=" isHovering ? 20 : 5 ">
+              <v-card :title=" v.title " :subtitle=" 'Dernier délai : ' + v.due " max-height="200"
+                max-width="400" v-bind=" props " :elevation=" isHovering ? 20 : 5 ">
                 <v-card-actions>
-                  <v-btn icon @click=" editFrom(v, i); dialog = true "
+                  <v-btn icon @click=" editFrom(v); dialog = true "
                     class="pa-0 ma-0"><v-icon>mdi-pencil</v-icon></v-btn>
-                  <v-btn icon @click=" snackbar = true; indexToEdit = i; "
+                  <v-btn icon @click=" snackbar = true; editItem = v "
                     class="pa-0 ma-0"><v-icon>mdi-trash-can</v-icon></v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn rounded="20" @click="changeStatus(i);" :color="btnColor">{{ v.status }}</v-btn>
+                    <v-btn rounded="20" @click="changeStatus(v,i);" :color="(v.status == 'ongoing')? 'warning':(v.status == 'complete')? 'success':'error'">{{ v.status }}</v-btn>
+                    <v-btn
+           :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        @click="show = !show"
+      ></v-btn>
                 </v-card-actions>
+                <v-expand-transition>
+      <div v-show="show">
+        <v-divider></v-divider>
+
+        <v-card-text>
+         {{ v.content }}
+        </v-card-text>
+      </div>
+    </v-expand-transition>
               </v-card>
             </template>
           </v-hover>
@@ -79,31 +92,27 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
       projects: [],
       projectsCopy: [],
-      todos: true,
-      userId: '',
-      btnColor: '',
       snackbar: false,
-      editMode: false,
-      newTitle: "",
       newStatus: "",
-      indexToEdit: 0,
-      drag: true,
+      editItem: null,
       dialog: false,
       title: '',
       content: '',
+      new:true,
       due: null,
-      id: null,
-      userId: '',
+      show:false,
       alerta: false,
       dateRules: [
         v => (v.length >= 4) || 'Format invalide'
       ],
       loading: false,
+      id: null
     }
   },
   mounted() {
@@ -111,35 +120,21 @@ export default {
   },
 
   methods: {
-    submit() {
+    async submit() {
 
-      if (this.id !== null) {
-        const project = {
-          title: this.title,
-          content: this.content,
-          due: this.due,// format(this.due, 'Do MMM YYYY'),
-          status: 'ongoing',
-          priority: 100,
-        }
-        this.projects.splice(this.id - 1, 1)
-        this.projects.push(project)
-        this.formReset()
-      }
-      else if (this.title.length > 0 && this.due.length >= 4) {
+      if (this.title.length > 0 && this.due.length >= 4 && this.new) {
         this.loading = true;
-        //const collectionRef = db.collection('users/'+this.userId+'/projects');
 
         const project = {
+          user: this.$store.state.user,
           title: this.title,
           content: this.content,
           due: this.due,// format(this.due, 'Do MMM YYYY'),
           status: 'ongoing',
           priority: 100,
         }
-        
-        this.btnColor = 'warning'
-        console.log(project)
-        this.projects.push(project)
+        axios.post('http://localhost:4000/api/create-project',project)
+        await this.saveOrder()
         //collectionRef.add(project).then(() => {
         this.formReset();
         //EventBus.$emit('project-added');
@@ -147,11 +142,20 @@ export default {
 
         this.alerta = false;
 
-      } else {
+      } 
+      else if(!this.new){
+        const project = {
+          user: this.$store.state.user,
+          title: this.title,
+          content: this.content,
+          due: this.due,// format(this.due, 'Do MMM YYYY'),
+        }
+        axios.post('http://localhost:4000/api/update-project/' + this.id,project)
+      }
+      else {
         this.alerta = true;
       }
 
-      this.projectsCopy = this.projects
     },
 
     formReset() {
@@ -162,11 +166,11 @@ export default {
       this.due = null;
       this.id = null;
     },
-    editFrom(item, i) {
+    editFrom(item) {
       this.title = item.title;
       this.content = item.content;
       this.due = item.due;
-      this.id = i
+      this.id = item._id
     },
 
 
@@ -194,96 +198,52 @@ export default {
       }
     },
 
-    changeStatus(index) {
+    changeStatus(value,index) {
 
       const currentProject = this.projects[index]
-      //var docRef = db.collection("users/"+this.userId+"/projects").doc(currentProject.id);
-
       // LOGIC FOR STATUS UPDATE
       switch (currentProject.status) {
         case 'ongoing':
           var newStatus = 'complete'
-          var btnColor = 'success'
           break;
 
         case 'complete':
         newStatus = 'overdue'
-          btnColor = 'error'
           break;
 
         case 'overdue':
           newStatus = 'ongoing'
-          btnColor = 'warning'
           break;
 
         default:
           break;
       }
 
-      // UPDATE DATABASE
-      //docRef.set({
-      //   status: newStatus,
-
-      // }, { merge: true });
-
-      // UPDATE LOCAL DATA
       currentProject.status = newStatus
-      this.btnColor = btnColor
-
-    },
-
-    deleteProject() {
-      var index = this.indexToEdit;
-      const currentProject = this.projects[index]
-      //var docRef = db.collection("users/"+this.userId+"/projects").doc(currentProject.id);
-
-      // DELETE ON DATABASE
-      //docRef.delete().then(function() {
-      //console.log("Document successfully deleted!");
-      //}).catch(function(error) {
-      //  alert(error.message);
-      //});
-
-
-      // DELETE ON LOCAL DATA
-      if (index > -1) {
-        this.projects.splice(index, 1);
-        this.projectsCopy.splice(index, 1);
-      }
-
-      // UPDATE ORDER ON DATABASE
-      this.saveOrder();
-
-    },
-
-    saveOrder() {
-
-      for (let index = 0; index < this.projects.length; index++) {
-        const currentProject = this.projects[index];
-        //var docRef = db.collection("users/"+this.userId+"/projects").doc(currentProject.id);
-
-        // UPDATE PRIORITY ON DATABASE
-        //docRef.set({
-        //  priority: index,
-
-        //}, { merge: true });
-
-      }
-    },
-
-    updateTitle(index) {
-      const currentProject = this.projects[index]
-      //var docRef = db.collection("users/"+this.userId+"/projects").doc(currentProject.id);
-
-      //docRef.set({
-      //     title: this.newTitle,
-      //
-      // }, { merge: true });
-
+      // UPDATE DATABASE
+      axios.post('http://localhost:4000/api/update-project/' + value._id,currentProject)
       // UPDATE LOCAL DATA
-      currentProject.title = this.newTitle
 
-      this.editMode = false;
+    },
+
+    async deleteProject() {
+      await axios.delete('http://localhost:4000/api/delete-project/' + this.editItem._id)
+        .then(this.saveOrder())
+
+    },
+
+    async saveOrder() {
+      await axios.get('http://localhost:4000/api/getproject').then(r => {
+        console.log(r.data,this.projects)
+        this.projects = r.data
+        var user = this.$store.state.user
+        this.projects =this.projects.filter(function (item) {
+          console.log(item)
+          return item.user === user
+        })
+      })
+      this.projectsCopy = this.projects
+      this.filterProjects('All')
     },
 
   }

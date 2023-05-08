@@ -1,13 +1,14 @@
-import { createApp } from 'vue'
-import { createStore } from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 import auth from './modules/auth'
-import App from './App.vue'
-const store = createStore({
+import { createStore } from 'vuex'
+export default createStore({
   modules: {
     auth
+  },
+  plugins: [createPersistedState()]
+})/*
+export default createStore({
+   
+  modules: {
   }
-})
-const app = createApp({ App })
-
-// Install the store instance as a plugin
-app.use(store)
+})*/
