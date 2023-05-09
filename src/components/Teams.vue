@@ -107,6 +107,9 @@ export default {
     }
   },
   mounted() {
+    if(this.$store.state.auth.user === null){
+      this.$router.push('/login')
+    }
     this.saveOrder();
   },
 

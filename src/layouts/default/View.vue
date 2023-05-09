@@ -27,8 +27,8 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>{{ IsConnected }}</v-icon>
+      <v-btn icon v-if="$store.state.auth.user !== null" @click="$router.push('/login');$store.state.auth.user = null">
+        <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-toolbar>
   </div>
@@ -37,7 +37,7 @@
 
       <v-card>
         <v-list>
-          <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" :title="$store.state.auth.username"
+          <v-list-item prepend-avatar="https://randomuser.me/api/portraits/lego/0.jpg" :title="$store.state.auth.username"
             :subtitle="$store.state.auth.useremail"></v-list-item>
         </v-list>
 
@@ -49,6 +49,7 @@
           <v-list-item prepend-icon="mdi-account-box" title="Mon compte" @click="$router.push('/Account')"></v-list-item>
         </v-list>
       </v-card>
+        <v-spacer></v-spacer>
     </v-navigation-drawer>
 
     <v-main style="height: auto">
@@ -69,7 +70,6 @@ export default {
       { title: 'Nouveau Compte', route: '/Register' },
     ],
     state: false,
-    IsConnected: "",
   }),
 }
 </script>

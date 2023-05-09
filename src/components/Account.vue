@@ -56,7 +56,7 @@
             <v-spacer></v-spacer>
 
             <v-btn color="success" @click="onSubmit();" type="submit" :loading="loading">
-              S'enregistrer
+              Valider des changement
 
               <v-icon icon="mdi-chevron-right" end></v-icon>
             </v-btn>
@@ -68,7 +68,7 @@
 </template>
   
 <script>
-
+import axios from 'axios'
   export default {
     data: () => ({
       form: true,
@@ -82,7 +82,19 @@
       show: false,
       terms:false
     }),
-
+    mounted(){
+      if(this.$store.state.auth.user === null){
+      this.$router.push('/login')
+      }
+      axios.get('http://localhost:4000/api/edit-users/'+ this.$store.state.auth.user).then(r=>{
+        this.user = {
+          first: r.data.first,
+          last: r.data.last,
+          email: r.data.email,
+          password: r.data.password
+        }
+      })
+    },
     methods: {
       async onSubmit () {
         try {
@@ -101,19 +113,6 @@
       },
       required (v) {
         return !!v || 'Champ requis'
-      },
-      Sendit() {
-        Email.send({
-          Host: "smtp.elasticemail.com",
-          Port: '2525',
-          Username: "tasksquad13000@gmail.com",
-          Password: "8AC08D1583A27406869865CBDB55A9209811",
-          To: this.user.email,
-          From: "tasksquad13000@gmail.com",
-          Subject: "Email d'activation",
-          Body: "Votre compte viens d'être activer",
-        })
-          .then(res => {console.log(res)});
       },
     },
   }

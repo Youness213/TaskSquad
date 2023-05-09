@@ -93,6 +93,7 @@
 
 <script>
 import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -115,8 +116,11 @@ export default {
       id: null
     }
   },
-  mounted() {
-    this.saveOrder();
+  async mounted() {
+    if(this.$store.state.auth.user === null){
+      this.$router.push('/login')
+    }
+    await this.saveOrder();
   },
 
   methods: {
@@ -174,8 +178,15 @@ export default {
     },
 
 
-    filterProjects(status) {
-      this.projects = this.projectsCopy
+    async filterProjects(status) {
+      await axios.get('http://localhost:4000/api/getproject').then(r => {
+        this.projects = r.data
+        var user = this.$store.state.auth.user
+        console.log(r.data,user)
+        this.projects =this.projects.filter(function (item) {
+          return item.user === user
+        })
+      })
 
       if (status === "complete") {
         this.projects = this.projects.filter(function (item) {
@@ -234,11 +245,9 @@ export default {
 
     async saveOrder() {
       await axios.get('http://localhost:4000/api/getproject').then(r => {
-        console.log(r.data,this.projects)
         this.projects = r.data
-        var user = this.$store.state.user
+        var user = this.$store.state.auth.user
         this.projects =this.projects.filter(function (item) {
-          console.log(item)
           return item.user === user
         })
       })
