@@ -33,7 +33,7 @@
               label="Mot de passe"
               placeholder="Enter your password"
             ></v-text-field>
-            <span><a @click="$router.push('Recover')">Mot de passe oublié?</a></span>
+            <span color="primary"><a @click="$router.push('Recover')">Mot de passe oublié?</a></span>
             <br>
             
 
@@ -84,7 +84,7 @@ export default {
         if (!this.form) return
         try{
           this.loading = true
-        await axios.get('http://localhost:4000/api/getuser').then(r => {
+        await axios.get('https://backendtasksquad.netlify.app/api/getuser').then(r => {
           r.data.forEach(element => {
             if(element.email == this.email && element.password == this.password){
               this.loading = false

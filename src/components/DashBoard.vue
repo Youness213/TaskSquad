@@ -48,7 +48,7 @@
           <v-card-text>
             <v-text-field label="Titre" v-model="title" prepend-icon="mdi-pencil"></v-text-field>
             <!-- Date Picker -->
-            <v-text-field label="Date" type="date" :rules="dateRules" v-model="due"
+            <v-text-field type="datetime-local" label="Délai" :rules="dateRules" v-model="due"
               prepend-icon="mdi-calendar-range"></v-text-field>
             <v-textarea label="Détails" prepend-icon="mdi-note-edit" v-model="content"></v-textarea>
             <v-spacer></v-spacer>
@@ -147,28 +147,29 @@ export default {
           status: 'ongoing',
           priority: 100,
         }
-        axios.post('http://localhost:4000/api/create-project', project)
+        axios.post('https://backendtasksquad.netlify.app/api/create-project', project)
         await this.saveOrder()
         //collectionRef.add(project).then(() => {
         this.formReset();
         //EventBus.$emit('project-added');
         //});
-
+          this.snackbar3 = true
         this.alerta = false;
 
       }
       else if (!this.new) {
-        await axios.get('http://localhost:4000/api/edit-project/' + this.id).then(async (r) => {
+        await axios.get('https://backendtasksquad.netlify.app/api/edit-project/' + this.id).then(async (r) => {
           
           r.data.title = this.title
           r.data.content = this.content
           r.data.due = this.due
-          await axios.post('http://localhost:4000/api/update-project/' + this.id, r.data)
+          await axios.post('https://backendtasksquad.netlify.app/api/update-project/' + this.id, r.data)
         }).then(()=>{
           this.saveOrder()
         //collectionRef.add(project).then(() => {
           this.formReset();
           this.alerta = false;
+          this.snackbar2 = true
         })
       }
       else {
@@ -195,7 +196,7 @@ export default {
 
 
     async filterProjects(status) {
-      await axios.get('http://localhost:4000/api/getproject').then(r => {
+      await axios.get('https://backendtasksquad.netlify.app/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
         console.log(r.data, user)
@@ -248,19 +249,19 @@ export default {
 
       currentProject.status = newStatus
       // UPDATE DATABASE
-      axios.post('http://localhost:4000/api/update-project/' + value._id, currentProject)
+      axios.post('https://backendtasksquad.netlify.app/api/update-project/' + value._id, currentProject)
       // UPDATE LOCAL DATA
 
     },
 
     async deleteProject() {
-      await axios.delete('http://localhost:4000/api/delete-project/' + this.editItem._id)
-        .then(this.saveOrder())
+      await axios.delete('https://backendtasksquad.netlify.app/api/delete-project/' + this.editItem._id)
+        .then(this.saveOrder()).then(this.snackbar1 = true)
 
     },
 
     async saveOrder() {
-      await axios.get('http://localhost:4000/api/getproject').then(r => {
+      await axios.get('https://backendtasksquad.netlify.app/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
         this.projects = this.projects.filter(function (item) {
