@@ -1,20 +1,18 @@
 {
   "name": "tasksquad",
-  "version": "0.0.0",
-  "private": false,
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "build": "vite build",
     "lint": "eslint . --fix --ignore-path .gitignore",
-    "dev": "vite --host",
-    "preview": "vite preview --host"
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "js-cookie": "^3.0.5",
-    "node-mailjet": "^6.0.2",
-    "nodemailer": "^6.9.1",
     "roboto-fontface": "*",
     "vue": "^3.2.47",
     "vue-router": "^4.0.0",
