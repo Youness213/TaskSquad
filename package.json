@@ -1,7 +1,7 @@
 {
   "name": "tasksquad",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "vite build",
     "lint": "eslint . --fix --ignore-path .gitignore",
