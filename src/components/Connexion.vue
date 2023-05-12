@@ -84,7 +84,7 @@ export default {
         if (!this.form) return
         try{
           this.loading = true
-        await axios.get('https://backendtasksquad.netlify.app/api/getuser').then(r => {
+        await axios.get('https://backendfortasksquad13.onrender.com/api/getuser').then(r => {
           r.data.forEach(element => {
             if(element.email == this.email && element.password == this.password){
               this.loading = false

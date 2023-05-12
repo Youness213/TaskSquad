@@ -90,7 +90,7 @@ import axios from 'axios'
       if(this.$store.state.auth.user === null){
       this.$router.push('/login')
       }
-      axios.get('http://localhost:4000/api/edit-users/'+ this.$store.state.auth.user).then(r=>{
+      axios.get('https://backendfortasksquad13.onrender.com/api/edit-users/'+ this.$store.state.auth.user).then(r=>{
         this.user = r.data
       })
     },
@@ -98,7 +98,7 @@ import axios from 'axios'
       async onSubmit () {
         try {
           if ((await this.$refs.form.validate()).valid) {
-            axios.post('http://localhost:4000/api/update-users/'+ this.$store.state.auth.user,this.user)
+            axios.post('https://backendfortasksquad13.onrender.com/api/update-users/'+ this.$store.state.auth.user,this.user)
             .then(async (r) => {
               if(r.status ==200){
                 this.snackbar = true

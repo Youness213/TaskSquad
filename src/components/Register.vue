@@ -107,7 +107,7 @@ import axios from 'axios'
       async onSubmit () {
         try {
           var valid =(await this.$refs.form.validate()).valid
-          await axios.get('https://backendtasksquad.netlify.app/api/getuser').then(r => {
+          await axios.get('https://backendfortasksquad13.onrender.com/api/getuser').then(r => {
             r.data.forEach(element => {
               if(element.email == this.email){
                 valid = false
@@ -116,7 +116,7 @@ import axios from 'axios'
             });
           })
           if (valid) {
-            axios.post('https://backendtasksquad.netlify.app/api/create-users',this.user)
+            axios.post('https://backendfortasksquad13.onrender.com/api/create-users',this.user)
             .then(async (res) => {
               if(res.status ==200){
                 

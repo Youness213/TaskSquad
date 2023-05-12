@@ -147,7 +147,7 @@ export default {
           status: 'ongoing',
           priority: 100,
         }
-        axios.post('https://backendtasksquad.netlify.app/api/create-project', project)
+        axios.post('https://backendfortasksquad13.onrender.com/api/create-project', project)
         await this.saveOrder()
         //collectionRef.add(project).then(() => {
         this.formReset();
@@ -158,12 +158,12 @@ export default {
 
       }
       else if (!this.new) {
-        await axios.get('https://backendtasksquad.netlify.app/api/edit-project/' + this.id).then(async (r) => {
+        await axios.get('https://backendfortasksquad13.onrender.com/api/edit-project/' + this.id).then(async (r) => {
           
           r.data.title = this.title
           r.data.content = this.content
           r.data.due = this.due
-          await axios.post('https://backendtasksquad.netlify.app/api/update-project/' + this.id, r.data)
+          await axios.post('https://backendfortasksquad13.onrender.com/api/update-project/' + this.id, r.data)
         }).then(()=>{
           this.saveOrder()
         //collectionRef.add(project).then(() => {
@@ -196,7 +196,7 @@ export default {
 
 
     async filterProjects(status) {
-      await axios.get('https://backendtasksquad.netlify.app/api/getproject').then(r => {
+      await axios.get('https://backendfortasksquad13.onrender.com/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
         console.log(r.data, user)
@@ -249,19 +249,19 @@ export default {
 
       currentProject.status = newStatus
       // UPDATE DATABASE
-      axios.post('https://backendtasksquad.netlify.app/api/update-project/' + value._id, currentProject)
+      axios.post('https://backendfortasksquad13.onrender.com/api/update-project/' + value._id, currentProject)
       // UPDATE LOCAL DATA
 
     },
 
     async deleteProject() {
-      await axios.delete('https://backendtasksquad.netlify.app/api/delete-project/' + this.editItem._id)
+      await axios.delete('https://backendfortasksquad13.onrender.com/api/delete-project/' + this.editItem._id)
         .then(this.saveOrder()).then(this.snackbar1 = true)
 
     },
 
     async saveOrder() {
-      await axios.get('https://backendtasksquad.netlify.app/api/getproject').then(r => {
+      await axios.get('https://backendfortasksquad13.onrender.com/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
         this.projects = this.projects.filter(function (item) {

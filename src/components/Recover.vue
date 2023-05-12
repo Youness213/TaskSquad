@@ -36,7 +36,7 @@ export default {
     methods: {
         async onSubmit() {
             this.loading = true
-            await axios.get('https://backendtasksquad.netlify.app/api/getuser').then(async (r) => {
+            await axios.get('https://backendfortasksquad13.onrender.com/api/getuser').then(async (r) => {
                 await r.data.forEach(async (element) => {
                     if (element.email == this.email) {
                         this.send = false
