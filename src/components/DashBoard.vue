@@ -2,33 +2,42 @@
   <v-snackbar v-model="snackbar" top color="warning" flat>
     <span>Voulez vous supprimer de manier définitif?</span>
     <v-btn flat color="warning" @click="snackbar = false; deleteProject()" class="ml-5">oui</v-btn>
-    <v-btn flat color="warning" @click=" snackbar = false; ">non</v-btn>
+    <v-btn flat color="warning" @click=" snackbar = false;">non</v-btn>
+  </v-snackbar>
+  <v-snackbar v-model="snackbar1" top color="primary" flat>
+    <span>Votre projet a bien était supprimer</span>
+  </v-snackbar>
+  <v-snackbar v-model="snackbar2" top color="primary" flat>
+    <span>Votre projet a bien était mis à jour</span>
+  </v-snackbar>
+  <v-snackbar v-model="snackbar3" top color="primary" flat>
+    <span>Un nouveau projet viens d'être ajouter</span>
   </v-snackbar>
   <v-container class="my-2">
 
     <v-layout row class="ma-3 py-2" wrap>
 
       <v-spacer></v-spacer>
-      <v-btn icon @click=" filterProjects('All') ">
+      <v-btn icon @click=" filterProjects('All')">
         <v-icon color="primary">mdi-select-all</v-icon>
       </v-btn>
 
-      <v-btn icon class="mx-1" @click=" filterProjects('complete'); ">
+      <v-btn icon class="mx-1" @click=" filterProjects('complete');">
         <v-icon color="success">mdi-check-circle-outline</v-icon>
       </v-btn>
 
-      <v-btn icon @click=" filterProjects('ongoing'); ">
+      <v-btn icon @click=" filterProjects('ongoing');">
         <v-icon color="warning">mdi-progress-check</v-icon>
       </v-btn>
 
-      <v-btn icon class="mx-1" @click=" filterProjects('overdue'); ">
+      <v-btn icon class="mx-1" @click=" filterProjects('overdue');">
         <v-icon color="error">mdi-clock</v-icon>
       </v-btn>
 
       <v-spacer></v-spacer>
-      <v-dialog max-width="600px" v-model=" dialog ">
-        <template v-slot:activator=" { props } ">
-          <v-btn icon v-bind=" props " class="mx-1">
+      <v-dialog max-width="600px" v-model="dialog">
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props" class="mx-1">
             <v-icon color="primary">mdi-plus-circle-outline</v-icon>
           </v-btn>
         </template>
@@ -37,55 +46,53 @@
             <h2>Ajouter un nouveau Project</h2>
           </v-card-title>
           <v-card-text>
-            <v-text-field label="Titre" v-model=" title " prepend-icon="mdi-pencil"></v-text-field>
+            <v-text-field label="Titre" v-model="title" prepend-icon="mdi-pencil"></v-text-field>
             <!-- Date Picker -->
-            <v-text-field label="Date" type="date" :rules=" dateRules " v-model=" due "
+            <v-text-field label="Date" type="date" :rules="dateRules" v-model="due"
               prepend-icon="mdi-calendar-range"></v-text-field>
-            <v-textarea label="Détails" prepend-icon="mdi-note-edit" v-model=" content "></v-textarea>
+            <v-textarea label="Détails" prepend-icon="mdi-note-edit" v-model="content"></v-textarea>
             <v-spacer></v-spacer>
           </v-card-text>
           <v-card-actions>
-            <v-btn flat color="success" class=" mx-0 mt-3" @click=" submit() " :loading=" loading ">Sauvegarder</v-btn>
-            <v-btn flat color="error" class=" mx-1 mt-3" @click=" dialog = false; formReset() ">Annuler</v-btn>
+            <v-btn flat color="success" class=" mx-0 mt-3" @click=" submit()" :loading="loading">Sauvegarder</v-btn>
+            <v-btn flat color="error" class=" mx-1 mt-3" @click=" dialog = false; formReset()">Annuler</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-layout>
-    <div justify-center v-if=" this.projects.length == 0 ">
+    <div justify-center v-if="this.projects.length == 0">
       <center>
         <p>Rien pour l'instant 😔</p>
       </center>
     </div>
     <v-row justify="center">
-      <v-col cols="12" xs="12" sm="4" md="3" lg="2" v-for="(    v, i    ) in     projects    " :key=" v.ID ">
-          <v-hover>
-            <template v-slot:default=" { isHovering, props } ">
-              <v-card :title=" v.title " :subtitle=" 'Dernier délai : ' + v.due " max-height="200"
-                max-width="400" v-bind=" props " :elevation=" isHovering ? 20 : 5 ">
-                <v-card-actions>
-                  <v-btn icon @click=" editFrom(v); dialog = true "
-                    class="pa-0 ma-0"><v-icon>mdi-pencil</v-icon></v-btn>
-                  <v-btn icon @click=" snackbar = true; editItem = v "
-                    class="pa-0 ma-0"><v-icon>mdi-trash-can</v-icon></v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn rounded="20" @click="changeStatus(v,i);" :color="(v.status == 'ongoing')? 'warning':(v.status == 'complete')? 'success':'error'">{{ v.status }}</v-btn>
-                    <v-btn
-           :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      ></v-btn>
-                </v-card-actions>
-                <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
+      <v-col cols="12" xs="12" sm="4" md="3" lg="2" v-for="(    v, i    ) in     projects    " :key="v.ID">
+        <v-hover>
+          <template v-slot:default="{ isHovering, props }">
+            <v-card :title="v.title" :subtitle="'Dernier délai : ' + v.due" max-height="200" max-width="400"
+              v-bind="props" :elevation="isHovering ? 20 : 5">
+              <v-card-actions>
+                <v-btn icon @click=" editFrom(v); dialog = true" class="pa-0 ma-0"><v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn icon @click=" snackbar = true; editItem = v"
+                  class="pa-0 ma-0"><v-icon>mdi-trash-can</v-icon></v-btn>
+                <v-spacer></v-spacer>
+                <v-btn rounded="20" @click="changeStatus(v, i);"
+                  :color="(v.status == 'ongoing') ? 'warning' : (v.status == 'complete') ? 'success' : 'error'">{{ v.status
+                  }}</v-btn>
+                <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
+              </v-card-actions>
+              <v-expand-transition>
+                <div v-show="show">
+                  <v-divider></v-divider>
 
-        <v-card-text>
-         {{ v.content }}
-        </v-card-text>
-      </div>
-    </v-expand-transition>
-              </v-card>
-            </template>
-          </v-hover>
+                  <v-card-text>
+                    {{ v.content }}
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
+            </v-card>
+          </template>
+        </v-hover>
       </v-col>
     </v-row>
   </v-container>
@@ -100,14 +107,17 @@ export default {
       projects: [],
       projectsCopy: [],
       snackbar: false,
+      snackbar1: false,
+      snackbar2: false,
+      snackbar3: false,
       newStatus: "",
       editItem: null,
       dialog: false,
       title: '',
       content: '',
-      new:true,
+      new: true,
       due: null,
-      show:false,
+      show: false,
       alerta: false,
       dateRules: [
         v => (v.length >= 4) || 'Format invalide'
@@ -117,7 +127,7 @@ export default {
     }
   },
   async mounted() {
-    if(this.$store.state.auth.user === null){
+    if (this.$store.state.auth.user === null) {
       this.$router.push('/login')
     }
     await this.saveOrder();
@@ -130,14 +140,14 @@ export default {
         this.loading = true;
 
         const project = {
-          user: this.$store.state.user,
+          user: this.$store.state.auth.user,
           title: this.title,
           content: this.content,
           due: this.due,// format(this.due, 'Do MMM YYYY'),
           status: 'ongoing',
           priority: 100,
         }
-        axios.post('http://localhost:4000/api/create-project',project)
+        axios.post('http://localhost:4000/api/create-project', project)
         await this.saveOrder()
         //collectionRef.add(project).then(() => {
         this.formReset();
@@ -146,15 +156,20 @@ export default {
 
         this.alerta = false;
 
-      } 
-      else if(!this.new){
-        const project = {
-          user: this.$store.state.user,
-          title: this.title,
-          content: this.content,
-          due: this.due,// format(this.due, 'Do MMM YYYY'),
-        }
-        axios.post('http://localhost:4000/api/update-project/' + this.id,project)
+      }
+      else if (!this.new) {
+        await axios.get('http://localhost:4000/api/edit-project/' + this.id).then(async (r) => {
+          
+          r.data.title = this.title
+          r.data.content = this.content
+          r.data.due = this.due
+          await axios.post('http://localhost:4000/api/update-project/' + this.id, r.data)
+        }).then(()=>{
+          this.saveOrder()
+        //collectionRef.add(project).then(() => {
+          this.formReset();
+          this.alerta = false;
+        })
       }
       else {
         this.alerta = true;
@@ -175,6 +190,7 @@ export default {
       this.content = item.content;
       this.due = item.due;
       this.id = item._id
+      this.new = false
     },
 
 
@@ -182,8 +198,8 @@ export default {
       await axios.get('http://localhost:4000/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
-        console.log(r.data,user)
-        this.projects =this.projects.filter(function (item) {
+        console.log(r.data, user)
+        this.projects = this.projects.filter(function (item) {
           return item.user === user
         })
       })
@@ -209,7 +225,7 @@ export default {
       }
     },
 
-    changeStatus(value,index) {
+    changeStatus(value, index) {
 
       const currentProject = this.projects[index]
       // LOGIC FOR STATUS UPDATE
@@ -219,7 +235,7 @@ export default {
           break;
 
         case 'complete':
-        newStatus = 'overdue'
+          newStatus = 'overdue'
           break;
 
         case 'overdue':
@@ -232,7 +248,7 @@ export default {
 
       currentProject.status = newStatus
       // UPDATE DATABASE
-      axios.post('http://localhost:4000/api/update-project/' + value._id,currentProject)
+      axios.post('http://localhost:4000/api/update-project/' + value._id, currentProject)
       // UPDATE LOCAL DATA
 
     },
@@ -247,7 +263,7 @@ export default {
       await axios.get('http://localhost:4000/api/getproject').then(r => {
         this.projects = r.data
         var user = this.$store.state.auth.user
-        this.projects =this.projects.filter(function (item) {
+        this.projects = this.projects.filter(function (item) {
           return item.user === user
         })
       })

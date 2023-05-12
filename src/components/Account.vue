@@ -1,5 +1,8 @@
 <template>
   <div class="fill-height ">
+        <v-snackbar v-model="snackbar" top color="primary" flat>
+            <span>Votre compte à bien était mis a jour</span>
+        </v-snackbar>
       <v-img class="align-center mt-16 ml-16 mr-n16 px-15"
       cover
       width="1710"
@@ -78,6 +81,7 @@ import axios from 'axios'
       email: '',
       password: '',
       },
+      snackbar: false,
       loading: false,
       show: false,
       terms:false
@@ -87,24 +91,20 @@ import axios from 'axios'
       this.$router.push('/login')
       }
       axios.get('http://localhost:4000/api/edit-users/'+ this.$store.state.auth.user).then(r=>{
-        this.user = {
-          first: r.data.first,
-          last: r.data.last,
-          email: r.data.email,
-          password: r.data.password
-        }
+        this.user = r.data
       })
     },
     methods: {
       async onSubmit () {
         try {
-          console.log(await this.$refs.form.validate())
           if ((await this.$refs.form.validate()).valid) {
-
-            this.Sendit()
-
+            axios.post('http://localhost:4000/api/update-users/'+ this.$store.state.auth.user,this.user)
+            .then(async (r) => {
+              if(r.status ==200){
+                this.snackbar = true
+              }
+            })
           }
-          console.log(await this.$refs.form.validate())
         }
         catch{
           console.log('nope')

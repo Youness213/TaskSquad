@@ -1,5 +1,8 @@
 <template>
   <div class="fill-height ">
+    <v-snackbar v-model="snackbar" top color="error" flat>
+      <span>Adresse email ou mot de passe incorrecte</span>
+    </v-snackbar>
       <v-img class="align-center ml-16 mr-n16 px-15"
       cover
       width="1710"
@@ -30,8 +33,9 @@
               label="Mot de passe"
               placeholder="Enter your password"
             ></v-text-field>
-
+            <span><a @click="$router.push('Recover')">Mot de passe oublié?</a></span>
             <br>
+            
 
             <v-btn
               :disabled="!form"
@@ -70,13 +74,16 @@ export default {
       email: null,
       password: null,
       loading: false,
-      show:false
+      show:false,
+      fail:true,
+      snackbar:false
     }),
 
     methods: {
       async onSubmit () {
         if (!this.form) return
-        this.loading = true
+        try{
+          this.loading = true
         await axios.get('http://localhost:4000/api/getuser').then(r => {
           r.data.forEach(element => {
             if(element.email == this.email && element.password == this.password){
@@ -84,10 +91,16 @@ export default {
               this.$store.state.auth.user = element._id
               this.$store.state.auth.username = element.first + ' ' + element.last
               this.$store.state.auth.useremail = element.email
-              router.push('/dashboard')
+              this.fail = false
             }
           });
+          
+        router.push('/DashBoard')
         })
+        }catch{
+          this.loading = false
+          this.snackbar = true
+        }
       },
       required (v) {
         return !!v || 'Champ requis'

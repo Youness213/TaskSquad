@@ -1,5 +1,8 @@
 <template>
   <div class="fill-height ">
+    <v-snackbar v-model="snackbar" top color="warning" flat>
+      <span>Cette adresse email est déjà utiliser</span>
+    </v-snackbar>
       <v-img class="align-center ml-16 mr-n16 px-15"
       cover
       width="1710"
@@ -95,6 +98,7 @@ import axios from 'axios'
       status:false
       },
       loading: false,
+      snackbar:false,
       show: false,
       terms:false
     }),
@@ -102,8 +106,16 @@ import axios from 'axios'
     methods: {
       async onSubmit () {
         try {
-          console.log(await this.$refs.form.validate())
-          if ((await this.$refs.form.validate()).valid) {
+          var valid =(await this.$refs.form.validate()).valid
+          await axios.get('http://localhost:4000/api/getuser').then(r => {
+            r.data.forEach(element => {
+              if(element.email == this.email){
+                valid = false
+                this.snackbar = true
+              }
+            });
+          })
+          if (valid) {
             axios.post('http://localhost:4000/api/create-users',this.user)
             .then(async (res) => {
               if(res.status ==200){
@@ -121,12 +133,10 @@ import axios from 'axios'
             })
 
           }
-          console.log(await this.$refs.form.validate())
         }
         catch{
           console.log('nope')
         }
-        //store.dispatch('signup',user)
       },
       required (v) {
         return !!v || 'Champ requis'
@@ -141,8 +151,7 @@ import axios from 'axios'
           From: "tasksquad13000@gmail.com",
           Subject: "Email d'activation",
           Body: "Votre compte viens d'être activer",
-        })
-          .then(res => {console.log(res)});
+        });
       },
     },
   }
